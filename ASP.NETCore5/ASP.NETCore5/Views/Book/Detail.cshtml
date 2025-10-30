@@ -1,0 +1,16 @@
+﻿@model ASP.NETCore5.Models.Book
+
+@{
+    ViewData["Title"] = "Book Detail";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>The following is detail of the book.</p>
+
+<p>Id: @Model.Id</p>
+<p>Title: @Model.Title</p>
+<p>Author: @Model.Author</p>
+<p>Email: @Model.Email</p>
+<p>Book Category: @Model.BookCategory</p>
+<p>Description: @Model.Description</p>

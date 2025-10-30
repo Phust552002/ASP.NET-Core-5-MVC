@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "ViewBag and ViewData";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Demo for ViewBag and ViewData</p>
+<div>
+    <div>Book Title: @ViewBag.BookTitle</div>
+    <div>Total: @ViewBag.Total</div>
+</div>
+<div>
+    <div>Book Title: @ViewData["BookTitle"]</div>
+    <div>Total: @ViewData["Total"]</div>
+</div>

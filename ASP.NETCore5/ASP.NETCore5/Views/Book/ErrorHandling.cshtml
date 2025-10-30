@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Book Stores - Demo";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Welcome to Book Stores.</p>
+
+<div>
+    <a href="/book/nofound">Link not found</a>
+</div>
+
+<form method="post">
+    <div class="form-group">
+        <label for="val">Number input</label>
+        <input type="text" class="form-control" id="val" name="val" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+
+    <div class="form-group">
+        Result: @ViewBag.Result
+    </div>
+</form>

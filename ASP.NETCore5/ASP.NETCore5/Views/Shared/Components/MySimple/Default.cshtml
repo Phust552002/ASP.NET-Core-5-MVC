@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ASP.NETCore5.Models.Book>
+
+<h2>@ViewBag.CompTitle</h2>
+<ul>
+    @foreach(var book in Model)
+            {
+                <li>@book.Title | @book.Author</li>
+            }
+</ul>

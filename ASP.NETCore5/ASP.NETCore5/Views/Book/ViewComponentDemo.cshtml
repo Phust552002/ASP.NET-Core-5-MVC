@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "ViewComponentDemo";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Welcome to Book Stores.</p>
+
+<!-- Gọi ViewComponent MySimple bằng code -->
+<div>
+    @await Component.InvokeAsync("MySimple", new { total = 3, title = "Simple Component" })
+</div>
+
+<div>##########################</div>
+
+<!-- Gọi ViewComponent MySimple bằng Tag Helper -->
+<div>
+    <vc:my-simple total="4" title="View Component from Tag-helper"></vc:my-simple>
+</div>
+
+<div>##########################</div>
+
+<!-- Gọi ViewComponent MyFresh bằng code -->
+<div>
+    @await Component.InvokeAsync("MyFresh", new { a = 5, b = 7, op = "add" })
+</div>
+
+<div>##########################</div>
+
+<!-- Gọi ViewComponent MyFresh bằng Tag Helper -->
+<div>
+    <vc:my-fresh a="5" b="9" op="subtract"></vc:my-fresh>
+ 
+</div>
