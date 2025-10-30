@@ -62,5 +62,27 @@ namespace ASP.NETCore5.Controllers
             return View();
         }
 
+        public IActionResult ShowProducts()
+        {
+            List<Product> list = new List<Product>();
+            for (int i = 0; i < 10; i++)
+            {
+                Product o = new Product
+                {
+                    Id = i,
+                    Name = string.Format("Product {0}", i),
+                    Price = (float)(1.5 + 2.5 * i),
+                    Quantity = (10 + i * 3)
+                };
+                list.Add(o);
+            }
+            return View(list);
+        }
+        public IActionResult ViewReport()
+        {
+            ViewBag.Data1 = new int[] { 10, 80, 90, 40, 60, 80, 50, 25, 30 };
+            ViewBag.Data2 = new int[] { 50, 30, 50, 70, 80, 40, 40, 55, 80 };
+            return View();
+        }
     }
 }

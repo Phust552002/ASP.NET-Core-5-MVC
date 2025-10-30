@@ -138,3 +138,4 @@ C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Product\Details.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Product\CreateProduct.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Product\ImageDetail.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Product\ShowProducts.cshtml.g.cs
