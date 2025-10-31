@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
@@ -9,8 +9,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ASP.NETCore5.Services;
 using ASP.NETCore5.Models;
+//using ASP.NETCore5.Settings;
+
 using Microsoft.Extensions.Caching.SqlServer;
 
 
@@ -31,9 +35,43 @@ namespace ASP.NETCore5
         {
             services.AddControllersWithViews();
             services.AddSingleton<IMyService, MyService>();
+            //UdemyDB
             services.AddDbContext<UdemyDBContext>(option =>
             option.UseSqlServer(Configuration.GetConnectionString("UdemyDB"))
             );
+            //identity database
+            services.AddDbContext<AppIdentityDbContext>(option =>
+            option.UseSqlServer(Configuration.GetConnectionString("UdemyDB"))
+            );
+
+            services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 5;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+               .AddEntityFrameworkStores<AppIdentityDbContext>()  // ✅ DÒNG QUAN TRỌNG NHẤT
+            .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login"; // Khi chưa đăng nhập
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
+
             string distributed = Configuration["Distributed"];
 
             switch (distributed)
@@ -89,6 +127,7 @@ namespace ASP.NETCore5
 
             app.UseRouting();
             app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
