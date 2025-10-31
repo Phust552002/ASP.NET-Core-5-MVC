@@ -1,0 +1,47 @@
+﻿@model ASP.NETCore5.Models.EmployeePicture
+
+@{
+    ViewData["Title"] = "EditPicture";
+}
+
+<h1>EditPicture</h1>
+
+<h4>EmployeePicture</h4>
+<hr />
+<div class="row">
+    <form method="post" enctype="multipart/form-data" asp-action="EditPicture" asp-controller="Employee">
+
+        <div class="form-group">
+            <input type="hidden" asp-for="EmpId" />
+            <input asp-for="ImageInfo" class="form-control" />
+            <span asp-validation-for="ImageInfo" class="text-danger"></span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ImageUrl))
+        {
+            <div class="form-group">
+                <img src="@ViewBag.ImageUrl" width="256" />
+            </div> }
+        else
+        {
+            <div class="form-group">
+                <img src="~/img/account.jpg" width="256" />
+            </div>
+            }
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <p>Upload Employee Picture:</p>
+                <input type="file" name="files" required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

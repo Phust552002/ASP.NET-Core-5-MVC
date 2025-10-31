@@ -1,4 +1,3 @@
-using ASP.NETCore5.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,6 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using ASP.NETCore5.Services;
+using ASP.NETCore5.Models;
+
 
 namespace ASP.NETCore5
 {
@@ -26,6 +29,10 @@ namespace ASP.NETCore5
         {
             services.AddControllersWithViews();
             services.AddSingleton<IMyService, MyService>();
+            services.AddDbContext<UdemyDBContext>(option =>
+            option.UseSqlServer(Configuration.GetConnectionString("UdemyDB"))
+
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
