@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ASP.NETCore5.Services;
 using ASP.NETCore5.Models;
+using Microsoft.Extensions.Caching.SqlServer;
+
 
 
 namespace ASP.NETCore5
@@ -31,8 +33,33 @@ namespace ASP.NETCore5
             services.AddSingleton<IMyService, MyService>();
             services.AddDbContext<UdemyDBContext>(option =>
             option.UseSqlServer(Configuration.GetConnectionString("UdemyDB"))
-
             );
+            string distributed = Configuration["Distributed"];
+
+            switch (distributed)
+            {
+                case "MEMORY":
+                    services.AddDistributedMemoryCache();
+                    services.AddSession(options =>
+                    {
+                        options.IdleTimeout = TimeSpan.FromSeconds(10);
+                        options.Cookie.HttpOnly = true;
+                        options.Cookie.IsEssential = true;
+                    });
+                    break;
+
+                case "SQLSERVER":
+                    services.AddDistributedSqlServerCache(options =>
+                    {
+                        options.ConnectionString = Configuration.GetConnectionString("UdemyDB");
+                        options.SchemaName = "dbo";
+                        options.TableName = "UdemyCache";
+                    });
+                    break;
+                default:
+                    services.AddDistributedMemoryCache();
+                    break;
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,7 +88,7 @@ namespace ASP.NETCore5
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -178,3 +178,12 @@ C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Employee\ImageDetail.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Employee\Paging.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Employee\SortingPaging.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Home\SessionView.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Home\ShowSessionView.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Home\ShowSessionView2.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\Microsoft.Extensions.Caching.SqlServer.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll
