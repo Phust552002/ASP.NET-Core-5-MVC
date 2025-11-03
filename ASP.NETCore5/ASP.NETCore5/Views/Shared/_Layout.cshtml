@@ -37,13 +37,35 @@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-link text-decoration-none">Đăng xuất (@User.Identity.Name)</button>
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <p>Hello, @User.Identity.Name!</p>
+                            </li>
+                        </ul>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Quản lý hệ thống</a>
+                                </li>
+                            </ul>
+                        }
+
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Manager" asp-action="Index">Report</a>
+                                </li>
+                            </ul>}
+
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button type="submit" class="btn btn-danger">Đăng xuất</button>
                         </form>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-link text-decoration-none">Đăng nhập</a>
+                        <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
                     }
                 </div>
             </div>

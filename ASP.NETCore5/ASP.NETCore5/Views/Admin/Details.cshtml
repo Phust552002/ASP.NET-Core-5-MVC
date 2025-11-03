@@ -1,0 +1,25 @@
+﻿@model ASP.NETCore5.Models.AppUser
+
+@{
+    ViewData["Title"] = "Chi tiết người dùng";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card p-3 shadow-sm">
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Tên đăng nhập</dt>
+        <dd class="col-sm-9">@Model.UserName</dd>
+
+        <dt class="col-sm-3">Họ tên</dt>
+        <dd class="col-sm-9">@Model.FullName</dd>
+
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+    </dl>
+</div>
+
+<a asp-action="List" class="btn btn-secondary mt-3">Quay lại danh sách</a>

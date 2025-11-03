@@ -25,7 +25,30 @@ namespace ASP.NETCore5.Controllers
         }
         public IActionResult List()
         {
-            return View();
+            return View(_userManager.Users);
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+            return View(user);
+        }
+        public async Task<IActionResult> Delete(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            AppUser user = await _userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+            return RedirectToAction("List");
         }
     }
 }

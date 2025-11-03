@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ASP.NETCore5.Services;
 using ASP.NETCore5.Models;
-//using ASP.NETCore5.Settings;
+using ASP.NETCore5.Settings;
 
 using Microsoft.Extensions.Caching.SqlServer;
 
@@ -33,6 +33,9 @@ namespace ASP.NETCore5
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+            services.AddTransient<IMailService, MailService>();
+
             services.AddControllersWithViews();
             services.AddSingleton<IMyService, MyService>();
             //UdemyDB
@@ -60,7 +63,7 @@ namespace ASP.NETCore5
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
 
-                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedEmail = true;
             })
                .AddEntityFrameworkStores<AppIdentityDbContext>()  // ✅ DÒNG QUAN TRỌNG NHẤT
             .AddDefaultTokenProviders();

@@ -3,22 +3,27 @@ using Microsoft.AspNetCore.Mvc;
 using ASP.NETCore5.Models;
 using ASP.NETCore5.Services;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+
 
 namespace ASP.NETCore5.Controllers
 {
     public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
-        //private readonly IMailService _mailService;
+        private readonly IMailService _mailService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
+        //private readonly IReCaptchaService _reCaptchaService;
         public AccountController(UserManager<AppUser> userManager,
+                                 IMailService mailService,
                                  SignInManager<AppUser> signInManager,
                                  RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
-            //_mailService = mailService;
+            _mailService = mailService;
             _signInManager = signInManager;
             _roleManager = roleManager;
         }
@@ -180,7 +185,17 @@ namespace ASP.NETCore5.Controllers
             return View();
         }
 
+        public async Task<IActionResult> SendEmail()
+        {
+            // send to email
+            MailRequest req = new MailRequest();
+            req.ToEmail = "huynhphuc552002@gmail.com";
+            req.Subject = "Test Email from ASP.NET Core 5 MVC";
+            req.Body = "This is a simple content.";
+            await _mailService.SendEmailAsync(req);
 
+            return View();
+        }
 
 
 

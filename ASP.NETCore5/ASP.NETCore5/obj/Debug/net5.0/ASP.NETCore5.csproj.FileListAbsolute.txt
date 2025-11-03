@@ -199,3 +199,11 @@ C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\GenerateRoles.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\GenerateUsers.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\AccessDenied.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Admin\Index.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Admin\List.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Admin\Details.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Admin\Delete.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\MailKit.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\MimeKit.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\SendEmail.cshtml.g.cs
