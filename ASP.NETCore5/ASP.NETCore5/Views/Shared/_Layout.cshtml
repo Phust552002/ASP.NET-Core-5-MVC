@@ -8,6 +8,18 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js" />
 </head>
+<script>
+    function confirmLogout(e) {
+        if ('@User.Identity.IsAuthenticated' === 'True') {
+            const confirmResult = confirm("Bạn đang đăng nhập. Bạn có chắc muốn đăng xuất không?");
+            if (!confirmResult) {
+                e.preventDefault();
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -59,9 +71,9 @@
                                 </li>
                             </ul>}
 
-                        <form asp-controller="Account" asp-action="Logout" method="post">
-                            <button type="submit" class="btn btn-danger">Đăng xuất</button>
-                        </form>
+                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="d-inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirmLogout(event)">Đăng xuất</button>
+                </form>
                     }
                     else
                     {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using System.Text;
 
 
 namespace ASP.NETCore5.Controllers
@@ -16,16 +17,19 @@ namespace ASP.NETCore5.Controllers
         private readonly IMailService _mailService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        //private readonly IReCaptchaService _reCaptchaService;
+        private IReCaptchaService _recaptchaService;
         public AccountController(UserManager<AppUser> userManager,
                                  IMailService mailService,
                                  SignInManager<AppUser> signInManager,
-                                 RoleManager<IdentityRole> roleManager)
+                                 RoleManager<IdentityRole> roleManager,
+                                 IReCaptchaService recaptchaService
+)
         {
             _userManager = userManager;
             _mailService = mailService;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _recaptchaService = recaptchaService;
         }
 
         public IActionResult Index()
@@ -83,24 +87,17 @@ namespace ASP.NETCore5.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Login([FromForm] LoginView model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
-
-        //        if (result.Succeeded)
-        //        {
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        else
-        //        ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
-        //    }
-
-        //    return View(model);
-        //}
         public async Task<IActionResult> Login([FromForm] LoginView model, string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+                if (User.IsInRole("Manager"))
+                    return RedirectToAction("Dashboard", "Manager");
+
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
                 AppUser user = await _userManager.FindByNameAsync(model.UserName);
@@ -197,7 +194,131 @@ namespace ASP.NETCore5.Controllers
             return View();
         }
 
+        public IActionResult Register2()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register2([FromForm] UserView model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new AppUser
+                {
+                    UserName = model.UserName,
+                    FullName = model.FullName,
+                    Email = model.Email
+                };
+                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    IdentityResult result2 = await _userManager.AddToRoleAsync(user, "Member");
+                    if (!result2.Succeeded)
+                    {
+                        ModelState.AddModelError(nameof(LoginView.UserName), "Failed to create the user");
+                        return View(model);
+                    }
+
+                    var usr = await _userManager.FindByEmailAsync(model.Email);
+                    var userId = await _userManager.GetUserIdAsync(usr);
+                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(usr);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                    string link = Url.Action("ConfirmEmail",
+                        "Account", new
+                        {
+                            userid = userId,
+                            code = code
+                        },
+                        protocol: HttpContext.Request.Scheme);
+
+                    // send to email
+                    MailRequest req = new MailRequest();
+                    req.ToEmail = usr.Email;
+                    req.Subject = "Email Confirmation";
+                    req.Body = $"<p>Click this link to activate your account: <href a='" + link + "'>" + link + "</a></p>";
+                    await _mailService.SendEmailAsync(req);
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(nameof(LoginView.UserName), "Failed to create the user");
+                }
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> ConfirmEmail(string code, string userid)
+        {
+            var token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var user = await _userManager.FindByIdAsync(userid);
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                ViewBag.Status = "Email confirmation was succeed";
+            }
+            else
+            {
+                ViewBag.Status = "Email confirmation was failed or invalid token / userid";
+            }
+            return View();
+        }
+
+        public IActionResult RegisterCaptcha()
+        {
+            ViewData["ReCaptchaKey"] = _recaptchaService.Configs.Key;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterCaptcha([FromForm] UserView model)
+        {
+            ViewData["ReCaptchaKey"] = _recaptchaService.Configs.Key;
+
+            if (ModelState.IsValid)
+            {
+                // validate reCAPTCHA
+                string token = Request.Form["g-recaptcha-response"];
+                if (!_recaptchaService.ValidateReCaptcha(token))
+                {
+                    ModelState.AddModelError(nameof(UserView.UserName),
+                        "Bạn chưa xác nhận CAPTCHA hoặc xác nhận không hợp lệ.");
+                    return View(model);
+                }
+
+                // tạo user mới
+                var user = new AppUser
+                {
+                    UserName = model.UserName,
+                    FullName = model.FullName,
+                    Email = model.Email
+                };
+
+                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    // gán role mặc định
+                    IdentityResult result2 =  await _userManager.AddToRoleAsync(user, "Member");
+                    if ( result2.Succeeded)
+                    TempData["SuccessMessage"] = "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.";
+                    return RedirectToAction("Index");
+                }
+
+                // nếu có lỗi khi tạo user
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            return View(model);
+        }
 
 
     }

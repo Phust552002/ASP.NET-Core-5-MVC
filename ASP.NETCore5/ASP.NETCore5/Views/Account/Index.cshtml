@@ -3,9 +3,30 @@
 }
 
 <h2>Index</h2>
+<script>
+    async function logoutAndGoRegister(e) {
+        e.preventDefault();
 
+        // Hỏi xác nhận (tuỳ chọn)
+        const result = confirm("Bạn đang đăng nhập. Có muốn đăng xuất và đăng ký tài khoản mới không?");
+        if (!result) return;
+
+        // Gửi request logout
+        await fetch('/Account/Logout', {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            }
+        });
+
+        // Sau khi logout xong → chuyển đến trang Register2
+        window.location.href = '/Account/Register2';
+    }
+</script>
 <ul>
+    <li><a asp-controller="Account" onclick="logoutAndGoRegister(event)" asp-action="Register2">Register with email confimation</a></li>
     <li><a asp-controller="Account" asp-action="Register">Register</a></li>
+    <li><a asp-controller="Account" asp-action="RegisterCaptcha">Register with Captcha</a></li>
     <li><a asp-controller="Account" asp-action="Login">Login</a></li>
     <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
     <li><a asp-controller="Account" asp-action="GenerateRoles">Generate Roles</a></li>

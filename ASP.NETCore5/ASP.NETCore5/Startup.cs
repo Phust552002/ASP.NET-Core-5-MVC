@@ -33,8 +33,12 @@ namespace ASP.NETCore5
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Mails Settings
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.AddTransient<IMailService, MailService>();
+            // ReCaptcha Settings
+            services.Configure<ReCaptchaSettings>(Configuration.GetSection("ReCaptchaSettings"));
+            services.AddTransient<IReCaptchaService, ReCaptchaService>();
 
             services.AddControllersWithViews();
             services.AddSingleton<IMyService, MyService>();
@@ -63,7 +67,7 @@ namespace ASP.NETCore5
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = false;
 
-                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedEmail = false;
             })
                .AddEntityFrameworkStores<AppIdentityDbContext>()  // ✅ DÒNG QUAN TRỌNG NHẤT
             .AddDefaultTokenProviders();
