@@ -411,7 +411,130 @@ namespace ASP.NETCore5.Controllers
         {
             return View();
         }
+        public IActionResult ChangeEmail()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeEmail(ChangeEmailView model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
 
+                user.Email = model.NewEmail;
+                var result = await _userManager.UpdateAsync(user);
 
+                if (result.Succeeded)
+                {
+                    ViewBag.Message = "Email changed successfully!";
+                    return View("ChangeEmailConfirmation");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                        ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ChangeEmailConfirmation()
+        {
+            return View();
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View(new ASP.NETCore5.Models.ForgotAccount());
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword([FromForm] ForgotAccount model)
+        {
+            if (!string.IsNullOrEmpty(model.UserName))
+            {
+                AppUser user = await _userManager.FindByNameAsync(model.UserName);
+                if (user != null && user.Email == model.Email)
+                {
+                    string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    string link = Url.Action(
+                        "ResetPassword",
+                        "Account",
+                        new { username = model.UserName, token = token },
+                        protocol: HttpContext.Request.Scheme);
+
+                    // Gửi email chứa link đặt lại mật khẩu
+                    MailRequest req = new MailRequest
+                    {
+                        ToEmail = user.Email,
+                        Subject = "Forgot Account",
+                        Body = $"<p>Here is the link to reset your password:</p>" +
+                               $"<p><a href='{link}'>Click here to reset password</a></p>"
+                    };
+
+                    await _mailService.SendEmailAsync(req);
+
+                    ViewBag.Message = "Password reset link has been sent to your email.";
+                    return View("ForgotPasswordConfirmation");
+                }
+
+                ModelState.AddModelError("", "Username or email is incorrect.");
+            }
+
+            return View(model);
+        }
+        [HttpGet]
+        public IActionResult ResetPassword(string username, string token)
+        {
+            var model = new ResetPasswordView
+            {
+                UserName = username,
+                Token = token
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordView model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found.");
+                return View(model);
+            }
+
+            // Đặt lại mật khẩu bằng token
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                ViewBag.Message = "Password has been reset successfully!";
+                return RedirectToAction("ResetPasswordConfirmation");
+            }
+            else
+            {
+                foreach (var err in result.Errors)
+                    ModelState.AddModelError("", err.Description);
+            }
+
+            return View(model);
+        }
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
     }
 }

@@ -6,13 +6,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ASP.NETCore5.Models
 {
-    public class ForgotAccount
+    public class ChangeEmailView
     {
-        [Required]
-
-        public string UserName { get; set; }
-        [Required(ErrorMessage = "Email is required")]
+        [Required(ErrorMessage = "New email is required")]
         [EmailAddress(ErrorMessage = "Invalid email format")]
-        public string Email { get; set; }
+        public string NewEmail { get; set; }
     }
 }
