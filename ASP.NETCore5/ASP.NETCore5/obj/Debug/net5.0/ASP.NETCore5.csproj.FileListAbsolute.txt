@@ -196,3 +196,6 @@ C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\Register.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\Index.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\Login.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\GenerateRoles.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\GenerateUsers.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\AccessDenied.cshtml.g.cs

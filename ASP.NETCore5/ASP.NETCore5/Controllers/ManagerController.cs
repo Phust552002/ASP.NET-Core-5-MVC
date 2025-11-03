@@ -9,21 +9,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NETCore5.Controllers
 {
-    [Authorize(Roles = "Manager,Admin")]
+    [Authorize(Roles = "Manager")]
 
-    public class AdminController : Controller
+    public class ManagerController : Controller
     {
-        private readonly UserManager<AppUser> _userManager;
-
-        public AdminController(UserManager<AppUser> userManager)
-        {
-            _userManager = userManager;
-        }
         public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult List()
         {
             return View();
         }

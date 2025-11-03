@@ -77,20 +77,43 @@ namespace ASP.NETCore5.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromForm] LoginView model)
+        [ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Login([FromForm] LoginView model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+
+        //        if (result.Succeeded)
+        //        {
+        //            return RedirectToAction("Index", "Home");
+        //        }
+        //        else
+        //        ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
+        //    }
+
+        //    return View(model);
+        //}
+        public async Task<IActionResult> Login([FromForm] LoginView model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
-
-                if (result.Succeeded)
+                AppUser user = await _userManager.FindByNameAsync(model.UserName);
+                if (user != null)
                 {
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
-            }
+                    await _signInManager.SignOutAsync();
+                    Microsoft.AspNetCore.Identity.SignInResult result =
+                        await _signInManager.PasswordSignInAsync(
+                            user, model.Password, false, false);
 
+                    if (result.Succeeded)
+                    {
+                        return Redirect(returnUrl ?? "/account");
+                    }
+                    else
+                        ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
+                }
+            }
             return View(model);
         }
 
@@ -100,5 +123,67 @@ namespace ASP.NETCore5.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
+        public async Task<IActionResult> GenerateRoles()
+        {
+            string[] roleNames = { "Admin", "Manager", "Member" };
+            IdentityResult roleResult;
+
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await _roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    roleResult = await _roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> GenerateUsers()
+        {
+            AppUser userAva1 = await _userManager.FindByNameAsync("manager");
+            if (userAva1 == null)
+            {
+                AppUser user1 = new AppUser
+                {
+                    UserName = "manager",
+                    FullName = "Manager",
+                    Email = "manager@email.com"
+                };
+                IdentityResult result = await _userManager.CreateAsync(user1, "Pass@Word1");
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user1, "Manager");
+                }
+            }
+            AppUser userAva2 = await _userManager.FindByEmailAsync("admin@email.com");
+            if (userAva2 == null)
+            {
+                AppUser user1 = new AppUser
+                {
+                    UserName = "admin",
+                    FullName = "Admin",
+                    Email = "admin@email.com"
+                };
+                IdentityResult result = await _userManager.CreateAsync(user1, "Pass@Word1");
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user1, "Admin");
+                }
+            }
+            return View();
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+
+
+
+
+
     }
 }

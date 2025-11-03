@@ -70,6 +70,7 @@ namespace ASP.NETCore5
                 options.LoginPath = "/Account/Login"; // Khi chưa đăng nhập
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
+                //options.SlidingExpiration = true;
             });
 
             string distributed = Configuration["Distributed"];
