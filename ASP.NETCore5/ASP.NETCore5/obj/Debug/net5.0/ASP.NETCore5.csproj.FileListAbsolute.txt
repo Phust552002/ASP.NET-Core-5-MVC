@@ -210,3 +210,7 @@ C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\Register2.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\ConfirmEmail.cshtml.g.cs
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\RegisterCaptcha.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\ForgotAccount.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\ForgotAccountConfirmation.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\ChangePassword.cshtml.g.cs
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Debug\net5.0\Razor\Views\Account\ChangePasswordConfirmation.cshtml.g.cs

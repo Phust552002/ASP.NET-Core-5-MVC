@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace ASP.NETCore5.Controllers
@@ -318,6 +319,97 @@ namespace ASP.NETCore5.Controllers
             }
 
             return View(model);
+        }
+
+        public IActionResult ForgotAccount()
+        {
+            return View(new ASP.NETCore5.Models.ForgotAccount());
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotAccount([FromForm] ForgotAccount model)
+        {
+            if (!string.IsNullOrEmpty(model.Email))
+            {
+                AppUser user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    // send to email
+                    MailRequest req = new MailRequest();
+                    req.ToEmail = user.Email;
+                    req.Subject = "Forgot Account";
+                    req.Body = "<p>Here is your account: " + user.UserName + "</p>";
+                    await _mailService.SendEmailAsync(req);
+
+                    return View("ForgotAccountConfirmation");
+                }
+            }
+            return View(model);
+        }
+
+        public IActionResult ForgotAccountConfirmation()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View(new PasswordView());
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword([FromForm] PasswordView model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.Password == model.RetypedPassword)
+                {
+                    // Lấy user hiện tại đang đăng nhập
+                    AppUser user = await _userManager.FindByNameAsync(User.Identity.Name);
+                    if (user == null)
+                    {
+                        ModelState.AddModelError("", "User not found.");
+                        return View(model);
+                    }
+
+                    // Kiểm tra mật khẩu hiện tại
+                    bool isValid = await _userManager.CheckPasswordAsync(user, model.CurrentPassword);
+                    if (isValid)
+                    {
+                        IdentityResult result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.Password);
+                        if (result.Succeeded)
+                        {
+                            ViewBag.Message = "Password changed successfully!";
+                            return View("ChangePasswordConfirmation");
+                        }
+                        else
+                        {
+                            foreach (var err in result.Errors)
+                            {
+                                ModelState.AddModelError("", err.Description);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("CurrentPassword", "Current password is incorrect.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("RetypedPassword", "New passwords do not match.");
+                }
+            }
+
+            return View(model);
+        }
+
+        public IActionResult ChangePasswordConfirmation()
+        {
+            return View();
         }
 
 

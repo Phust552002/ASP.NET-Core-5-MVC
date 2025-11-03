@@ -1,0 +1,37 @@
+﻿@model ASP.NETCore5.Models.ForgotAccount
+@{
+    ViewData["Title"] = "Forgot Account";
+}
+
+<h1>Forgot Account</h1>
+<h4>Enter your email to recover your account</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="ForgotAccount" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your registered email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <input type="submit" value="Submit" class="btn btn-primary w-100" />
+            </div>
+        </form>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-info mt-3">
+                @ViewBag.Message
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
