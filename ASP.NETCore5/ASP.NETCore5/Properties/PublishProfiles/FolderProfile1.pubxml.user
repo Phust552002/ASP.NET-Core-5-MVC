@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Release\net5.0\publish\</_PublishTargetUrl>
+    <History>True|2025-11-03T08:52:23.2475106Z;True|2025-11-03T15:47:57.1805276+07:00;</History>
+  </PropertyGroup>
+</Project>
