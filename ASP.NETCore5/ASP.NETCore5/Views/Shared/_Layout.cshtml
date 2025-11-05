@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -8,81 +10,53 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.min.js" />
 </head>
-<script>
-    function confirmLogout(e) {
-        if ('@User.Identity.IsAuthenticated' === 'True') {
-            const confirmResult = confirm("Bạn đang đăng nhập. Bạn có chắc muốn đăng xuất không?");
-            if (!confirmResult) {
-                e.preventDefault();
-                return false;
-            }
-        }
-        return true;
-    }
-</script>
+
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ASP.NETCore5</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Account</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Book</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
-                        </li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Account</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Book" asp-action="Index">Book</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employee</a></li>
                     </ul>
-                    @if (User.Identity.IsAuthenticated)
+                    @{
+                        var username = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+                        var roles = HttpContextAccessor.HttpContext.Session.GetString("UserRoles");
+                    }
+
+                    @if (!string.IsNullOrEmpty(username))
                     {
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <p>Hello, @User.Identity.Name!</p>
-                            </li>
-                        </ul>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <ul class="navbar-nav flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Quản lý hệ thống</a>
-                                </li>
-                            </ul>
-                        }
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Hello, @username!</span>
 
-                        @if (User.IsInRole("Manager"))
-                        {
-                            <ul class="navbar-nav flex-grow-1">
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Manager" asp-action="Index">Report</a>
-                                </li>
-                            </ul>}
+                    @if (roles?.Contains("Admin") == true || roles?.Contains("Manager") == true)
+                    {
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Quản lý người dùng</a></li>
+                    }
 
-                <form asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="d-inline">
-                    <button type="submit" class="btn btn-danger" onclick="return confirmLogout(event)">Đăng xuất</button>
-                </form>
+                    <a href="/Account/Logout" class="btn btn-danger btn-sm">Đăng xuất</a>
+                </div>
                     }
                     else
                     {
-                        <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
+                        <a href="/Account/Login" class="btn btn-primary btn-sm">Đăng nhập</a>
                     }
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -94,9 +68,43 @@
             &copy; 2025 - ASP.NETCore5 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!-- Các thư viện JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+
+    <!-- Script xử lý login/logout -->
+    @*<script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const token = sessionStorage.getItem("jwtToken");
+                const username = sessionStorage.getItem("username");
+
+                const authArea = document.getElementById("authArea");
+                authArea.innerHTML = "";
+
+                if (token && username) {
+                    // Có token -> hiển thị Hello + Logout
+                    authArea.innerHTML = `
+                                <span class="me-3 text-dark">Hello, ${username}!</span>
+                                <button id="logoutBtn" class="btn btn-danger btn-sm">Đăng xuất</button>
+                            `;
+
+                    document.getElementById("logoutBtn").addEventListener("click", function () {
+                        if (confirm("Bạn có chắc muốn đăng xuất không?")) {
+                            sessionStorage.removeItem("jwtToken");
+                            sessionStorage.removeItem("username");
+                            window.location.href = '/Account/Login';
+                        }
+                    });
+                } else {
+                    // Chưa đăng nhập
+                    authArea.innerHTML = `<a href="/Account/Login" class="btn btn-primary btn-sm">Đăng nhập</a>`;
+                }
+            });
+        </script>*@
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

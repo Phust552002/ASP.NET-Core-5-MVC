@@ -8,12 +8,18 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
-
+using System.Net.Http;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Linq;
 
 namespace ASP.NETCore5.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+
         private readonly UserManager<AppUser> _userManager;
         private readonly IMailService _mailService;
         private readonly SignInManager<AppUser> _signInManager;
@@ -23,7 +29,8 @@ namespace ASP.NETCore5.Controllers
                                  IMailService mailService,
                                  SignInManager<AppUser> signInManager,
                                  RoleManager<IdentityRole> roleManager,
-                                 IReCaptchaService recaptchaService
+                                 IReCaptchaService recaptchaService,
+                                 IHttpClientFactory httpClientFactory
 )
         {
             _userManager = userManager;
@@ -31,6 +38,8 @@ namespace ASP.NETCore5.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
             _recaptchaService = recaptchaService;
+            _httpClientFactory = httpClientFactory;
+
         }
 
         public IActionResult Index()
@@ -81,51 +90,118 @@ namespace ASP.NETCore5.Controllers
             return View(model);
         }
 
+        //Login nhận jwt token lưu vào sesion gọi API /api/jwtauth/login2 để auth
+
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login([FromForm] LoginView model, string returnUrl)
+        public async Task<IActionResult> Login([FromForm] LoginView model)
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Admin"))
-                    return RedirectToAction("Index", "Admin");
-                if (User.IsInRole("Manager"))
-                    return RedirectToAction("Dashboard", "Manager");
+            if (!ModelState.IsValid)
+                return View(model);
 
-                return RedirectToAction("Index", "Home");
-            }
-            if (ModelState.IsValid)
-            {
-                AppUser user = await _userManager.FindByNameAsync(model.UserName);
-                if (user != null)
-                {
-                    await _signInManager.SignOutAsync();
-                    Microsoft.AspNetCore.Identity.SignInResult result =
-                        await _signInManager.PasswordSignInAsync(
-                            user, model.Password, false, false);
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44327");
 
-                    if (result.Succeeded)
-                    {
-                        return Redirect(returnUrl ?? "/account");
-                    }
-                    else
-                        ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
-                }
+            var json = JsonSerializer.Serialize(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("/api/jwtauth/login2", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
+                return View(model);
             }
-            return View(model);
+
+            var resString = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(resString);
+            var root = doc.RootElement;
+
+            string token = root.TryGetProperty("token", out var t) ? t.GetString() ?? "" : "";
+            string username = root.TryGetProperty("username", out var u) ? u.GetString() ?? "" : "";
+            string roles = "";
+
+            if (root.TryGetProperty("roles", out var r))
+            {
+                if (r.ValueKind == JsonValueKind.Array)
+                    roles = string.Join(",", r.EnumerateArray().Select(x => x.GetString()));
+                else if (r.ValueKind == JsonValueKind.String)
+                    roles = r.GetString();
+            }
+
+            // ✅ Lưu Session để Middleware & Layout dùng
+            HttpContext.Session.SetString("JWToken", token);
+            HttpContext.Session.SetString("UserName", username);
+            HttpContext.Session.SetString("UserRoles", roles ?? "");
+            await HttpContext.Session.CommitAsync();
+            System.Diagnostics.Debug.WriteLine($"[Login] {username} - Roles={roles}");
+
+            // ✅ Chuyển hướng về Home (hoặc Admin nếu có role Admin)
+            if (roles == "Admin" || roles.Contains("Manager"))
+                return RedirectToAction("Index", "Admin");
+
+            return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Login");
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Account");
         }
+
+        // Login Logout với Identity
+        //public IActionResult Login()
+        //{
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Login([FromForm] LoginView model, string returnUrl)
+        //{
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        if (User.IsInRole("Admin"))
+        //            return RedirectToAction("Index", "Admin");
+        //        if (User.IsInRole("Manager"))
+        //            return RedirectToAction("Dashboard", "Manager");
+
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        //    if (ModelState.IsValid)
+        //    {
+        //        AppUser user = await _userManager.FindByNameAsync(model.UserName);
+        //        if (user != null)
+        //        {
+        //            await _signInManager.SignOutAsync();
+        //            Microsoft.AspNetCore.Identity.SignInResult result =
+        //                await _signInManager.PasswordSignInAsync(
+        //                    user, model.Password, false, false);
+
+        //            if (result.Succeeded)
+        //            {
+        //                return Redirect(returnUrl ?? "/account");
+        //            }
+        //            else
+        //                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
+        //        }
+        //    }
+        //    return View(model);
+        //}
+
+        //[HttpPost]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await _signInManager.SignOutAsync();
+        //    return RedirectToAction("Login");
+        //}
+
+
+
 
         public async Task<IActionResult> GenerateRoles()
         {

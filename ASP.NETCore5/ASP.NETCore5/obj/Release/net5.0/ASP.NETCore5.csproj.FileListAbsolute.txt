@@ -219,3 +219,5 @@ C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Release\net5.0\ref\ASP.NETCore5.dll
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Release\net5.0\ASP.NETCore5.pdb
 C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\obj\Release\net5.0\ASP.NETCore5.genruntimeconfig.cache
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Release\net5.0\JWT.dll
+C:\Users\Admin\Documents\GitHub\ASP.NET-Core-5-MVC\ASP.NETCore5\ASP.NETCore5\bin\Release\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

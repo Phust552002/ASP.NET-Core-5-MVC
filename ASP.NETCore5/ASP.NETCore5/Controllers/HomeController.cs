@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
 using ASP.NETCore5.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ASP.NETCore5.Controllers
 {
@@ -27,6 +28,13 @@ namespace ASP.NETCore5.Controllers
 
         public IActionResult Index()
         {
+            var token = HttpContext.Session.GetString("JWToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            ViewBag.UserName = HttpContext.Session.GetString("UserName");
             return View();
         }
 

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ASP.NETCore5.Controllers
 {
-    [Authorize(Roles = "Manager,Admin")]
+    [Authorize(Roles = "Admin")]
 
     public class AdminController : Controller
     {

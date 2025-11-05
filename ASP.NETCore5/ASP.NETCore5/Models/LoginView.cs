@@ -8,13 +8,10 @@ namespace ASP.NETCore5.Models
 {
     public class LoginView
     {
-        [Required(ErrorMessage = "Vui lòng nhập tên đăng nhập.")]
-        [Display(Name = "Tên đăng nhập")]
+        [Required(ErrorMessage = "Vui lòng nhập tên đăng nhập")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Mật khẩu")]
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         public string Password { get; set; }
     }
 }
